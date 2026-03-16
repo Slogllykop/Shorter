@@ -74,7 +74,9 @@ export function LinkList({ links, baseUrl }: LinkListProps) {
                                             </button>
                                         }
                                     />
-                                    <TooltipContent>Clear search</TooltipContent>
+                                    <TooltipContent>
+                                        Clear search
+                                    </TooltipContent>
                                 </Tooltip>
                             ) : null}
                         </TooltipProvider>

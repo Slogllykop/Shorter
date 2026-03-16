@@ -70,7 +70,7 @@ export function LinkCard({ link, baseUrl }: LinkCardProps) {
 
     return (
         <>
-            <article className="group relative overflow-hidden rounded-2xl border border-white/8 bg-linear-to-b from-white/4 to-white/1 transition-all duration-300 hover:border-white/[0.14] hover:shadow-[0_0_40px_rgba(255,255,255,0.03)]">
+            <article className="group relative overflow-hidden rounded-2xl border border-white/8 transition-all duration-300 hover:border-white/[0.14] hover:shadow-[0_0_15px_rgba(255,255,255,0.03)]">
                 <TooltipProvider>
                     {/* Main Content */}
                     <div className="flex gap-5 p-5">
@@ -101,7 +101,7 @@ export function LinkCard({ link, baseUrl }: LinkCardProps) {
                         {/* Info Column */}
                         <div className="flex min-w-0 flex-1 flex-col gap-3">
                             {/* Title + Click Badge */}
-                            <div className="flex items-start justify-between gap-3">
+                            <div className="flex items-start gap-3">
                                 <div className="min-w-0">
                                     <h3 className="truncate font-medium text-[15px] text-white leading-snug">
                                         {link.title || "Untitled link"}
@@ -115,7 +115,9 @@ export function LinkCard({ link, baseUrl }: LinkCardProps) {
                                     className="shrink-0 bg-white/[0.07] font-mono text-white/80 tabular-nums"
                                 >
                                     {link.click_count.toLocaleString()}{" "}
-                                    {link.click_count === 1 ? "click" : "clicks"}
+                                    {link.click_count === 1
+                                        ? "click"
+                                        : "clicks"}
                                 </Badge>
                             </div>
 
@@ -140,7 +142,7 @@ export function LinkCard({ link, baseUrl }: LinkCardProps) {
                         </div>
 
                         {/* Desktop Action Column */}
-                        <div className="hidden shrink-0 flex-col gap-1.5 sm:flex">
+                        <div className="hidden shrink-0 items-start gap-1.5 sm:flex">
                             <Tooltip>
                                 <TooltipTrigger
                                     render={
