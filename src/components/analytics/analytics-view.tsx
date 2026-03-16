@@ -33,6 +33,7 @@ import {
     DialogHeader,
     DialogTitle,
 } from "@/components/ui/dialog";
+import { Skeleton } from "@/components/ui/skeleton";
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs";
 import {
     Tooltip,
@@ -157,6 +158,9 @@ export function AnalyticsView({
                                 </div>
 
                                 <div className="flex items-center gap-3">
+                                    {isLoading ? (
+                                        <IconLoader2 className="size-5 animate-spin text-white/56" />
+                                    ) : null}
                                     <Tabs
                                         value={period}
                                         onValueChange={(value) =>
@@ -179,10 +183,6 @@ export function AnalyticsView({
                                             </TabsTrigger>
                                         </TabsList>
                                     </Tabs>
-
-                                    {isLoading ? (
-                                        <IconLoader2 className="size-5 animate-spin text-white/56" />
-                                    ) : null}
                                 </div>
                             </div>
 
@@ -338,14 +338,23 @@ export function AnalyticsView({
                             </div>
                         </div>
                         <div>
-                            <p className="mt-4 font-semibold text-3xl text-white tracking-tight">
-                                {periodClicks.toLocaleString()}
-                            </p>
-                            <p className="mt-1 text-sm text-white/56">
-                                {period === "all"
-                                    ? "All recorded history"
-                                    : `Traffic in the last ${period}`}
-                            </p>
+                            {isLoading ? (
+                                <div className="mt-4 space-y-2">
+                                    <Skeleton className="h-9 w-24 bg-white/10" />
+                                    <Skeleton className="h-5 w-32 bg-white/10" />
+                                </div>
+                            ) : (
+                                <>
+                                    <p className="mt-4 font-semibold text-3xl text-white tracking-tight">
+                                        {periodClicks.toLocaleString()}
+                                    </p>
+                                    <p className="mt-1 text-sm text-white/56">
+                                        {period === "all"
+                                            ? "All recorded history"
+                                            : `Traffic in the last ${period}`}
+                                    </p>
+                                </>
+                            )}
                         </div>
                     </div>
 
@@ -359,12 +368,21 @@ export function AnalyticsView({
                             </div>
                         </div>
                         <div>
-                            <p className="mt-4 font-semibold text-3xl text-white capitalize tracking-tight">
-                                {topDevice?.device_type || "N/A"}
-                            </p>
-                            <p className="mt-1 text-sm text-white/56">
-                                {topDevice?.clicks || 0} clicks
-                            </p>
+                            {isLoading ? (
+                                <div className="mt-4 space-y-2">
+                                    <Skeleton className="h-9 w-24 bg-white/10" />
+                                    <Skeleton className="h-5 w-24 bg-white/10" />
+                                </div>
+                            ) : (
+                                <>
+                                    <p className="mt-4 font-semibold text-3xl text-white capitalize tracking-tight">
+                                        {topDevice?.device_type || "N/A"}
+                                    </p>
+                                    <p className="mt-1 text-sm text-white/56">
+                                        {topDevice?.clicks || 0} clicks
+                                    </p>
+                                </>
+                            )}
                         </div>
                     </div>
 
@@ -378,12 +396,21 @@ export function AnalyticsView({
                             </div>
                         </div>
                         <div>
-                            <p className="mt-4 font-semibold text-3xl text-white tracking-tight">
-                                {avgPerActiveDay.toLocaleString()}
-                            </p>
-                            <p className="mt-1 text-sm text-white/56">
-                                Across {activeDays} active days
-                            </p>
+                            {isLoading ? (
+                                <div className="mt-4 space-y-2">
+                                    <Skeleton className="h-9 w-24 bg-white/10" />
+                                    <Skeleton className="h-5 w-32 bg-white/10" />
+                                </div>
+                            ) : (
+                                <>
+                                    <p className="mt-4 font-semibold text-3xl text-white tracking-tight">
+                                        {avgPerActiveDay.toLocaleString()}
+                                    </p>
+                                    <p className="mt-1 text-sm text-white/56">
+                                        Across {activeDays} active days
+                                    </p>
+                                </>
+                            )}
                         </div>
                     </div>
 
@@ -397,16 +424,26 @@ export function AnalyticsView({
                             </div>
                         </div>
                         <div>
-                            <p
-                                className="mt-4 truncate font-semibold text-3xl text-white tracking-tight"
-                                title={topCountry?.country || "N/A"}
-                            >
-                                {topCountry?.country || "N/A"}
-                            </p>
-                            <p className="mt-1 text-sm text-white/56">
-                                {topCountry?.clicks || 0} clicks ·{" "}
-                                {data?.countries.length ?? 0} countries total
-                            </p>
+                            {isLoading ? (
+                                <div className="mt-4 space-y-2">
+                                    <Skeleton className="h-9 w-24 bg-white/10" />
+                                    <Skeleton className="h-5 w-36 bg-white/10" />
+                                </div>
+                            ) : (
+                                <>
+                                    <p
+                                        className="mt-4 truncate font-semibold text-3xl text-white tracking-tight"
+                                        title={topCountry?.country || "N/A"}
+                                    >
+                                        {topCountry?.country || "N/A"}
+                                    </p>
+                                    <p className="mt-1 text-sm text-white/56">
+                                        {topCountry?.clicks || 0} clicks ·{" "}
+                                        {data?.countries.length ?? 0} countries
+                                        total
+                                    </p>
+                                </>
+                            )}
                         </div>
                     </div>
                 </div>
@@ -421,7 +458,11 @@ export function AnalyticsView({
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <ClickChart data={data?.timeSeries ?? []} />
+                            {isLoading ? (
+                                <Skeleton className="h-[300px] w-full bg-white/10" />
+                            ) : (
+                                <ClickChart data={data?.timeSeries ?? []} />
+                            )}
                         </CardContent>
                     </Card>
 
@@ -433,7 +474,11 @@ export function AnalyticsView({
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <DeviceChart data={data?.devices ?? []} />
+                            {isLoading ? (
+                                <Skeleton className="h-[300px] w-full bg-white/10" />
+                            ) : (
+                                <DeviceChart data={data?.devices ?? []} />
+                            )}
                         </CardContent>
                     </Card>
 
@@ -445,7 +490,11 @@ export function AnalyticsView({
                             </CardDescription>
                         </CardHeader>
                         <CardContent>
-                            <CountryChart data={data?.countries ?? []} />
+                            {isLoading ? (
+                                <Skeleton className="h-[300px] w-full bg-white/10" />
+                            ) : (
+                                <CountryChart data={data?.countries ?? []} />
+                            )}
                         </CardContent>
                     </Card>
                 </div>

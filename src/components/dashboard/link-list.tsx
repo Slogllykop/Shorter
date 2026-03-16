@@ -1,6 +1,6 @@
 "use client";
 
-import { IconLink, IconSearch, IconSparkles, IconX } from "@tabler/icons-react";
+import { IconLink, IconSearch, IconX } from "@tabler/icons-react";
 import Fuse from "fuse.js";
 import { useDeferredValue, useState } from "react";
 import type { LinkData } from "@/app/(dashboard)/actions";
@@ -83,9 +83,8 @@ export function LinkList({ links, baseUrl }: LinkListProps) {
                     </div>
 
                     <div className="flex items-center gap-2 rounded-2xl border border-white/10 bg-black/24 px-3 py-2 text-white/64 text-xs">
-                        <IconSparkles className="size-3.5" />
                         <span>
-                            {filteredLinks.length} of {links.length} links
+                            {filteredLinks.length} / {links.length} links
                         </span>
                     </div>
                 </div>
