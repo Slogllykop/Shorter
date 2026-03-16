@@ -8,7 +8,7 @@ export default async function RedirectPage({
     const { slug } = await params;
 
     return (
-        <div className="flex min-h-screen items-center justify-center bg-black">
+        <div className="flex min-h-dvh items-center justify-center bg-black">
             <RedirectClient slug={slug} />
         </div>
     );
