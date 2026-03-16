@@ -140,3 +140,7 @@
 g[class^="recharts-zIndex"] {
     outline: none;
 }
+
+button {
+    cursor: pointer;
+}
