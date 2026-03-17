@@ -136,7 +136,7 @@ export function EditLinkDialog({
                                                 onClick={handleRandomize}
                                                 disabled={isPending}
                                             >
-                                                <IconRefresh />
+                                                <IconRefresh aria-hidden="true" />
                                             </Button>
                                         }
                                     />
@@ -172,6 +172,7 @@ export function EditLinkDialog({
                         <Button type="submit" disabled={isPending}>
                             {isPending ? (
                                 <IconLoader2
+                                    aria-hidden="true"
                                     data-icon="inline-start"
                                     className="animate-spin"
                                 />

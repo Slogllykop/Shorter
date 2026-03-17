@@ -49,9 +49,13 @@ export function EmailList({
                                 size="sm"
                                 onClick={() => removeEmail(email.email)}
                                 disabled={isPending || emails.length === 1}
+                                aria-label={`Remove ${email.email} from whitelist`}
                                 className="text-zinc-400 hover:bg-zinc-900 hover:text-red-400"
                             >
-                                <IconTrash className="h-4 w-4" />
+                                <IconTrash
+                                    aria-hidden="true"
+                                    className="h-4 w-4"
+                                />
                             </Button>
                         </div>
                     ))}

@@ -81,6 +81,7 @@ export function LinkCard({ link, baseUrl }: LinkCardProps) {
                                     <button
                                         type="button"
                                         onClick={() => setQrOpen(true)}
+                                        aria-label="View QR code"
                                         className="group/qr relative shrink-0 cursor-pointer self-start rounded-xl border border-white/10 bg-white p-0 shadow-[0_8px_24px_rgba(0,0,0,0.3)] transition-transform duration-200 hover:scale-105"
                                     >
                                         <QrCode
@@ -90,7 +91,10 @@ export function LinkCard({ link, baseUrl }: LinkCardProps) {
                                             className="rounded-xl"
                                         />
                                         <div className="pointer-events-none absolute inset-0 flex items-center justify-center rounded-xl bg-black/50 opacity-0 transition-opacity group-hover/qr:opacity-100">
-                                            <IconBarcode className="size-5 text-white" />
+                                            <IconBarcode
+                                                aria-hidden="true"
+                                                className="size-5 text-white"
+                                            />
                                         </div>
                                     </button>
                                 }
@@ -123,7 +127,10 @@ export function LinkCard({ link, baseUrl }: LinkCardProps) {
 
                             {/* Short URL */}
                             <div className="flex items-center gap-1.5 text-emerald-400/80 text-sm">
-                                <IconLink className="size-3.5 shrink-0" />
+                                <IconLink
+                                    aria-hidden="true"
+                                    className="size-3.5 shrink-0"
+                                />
                                 <span className="truncate">{shortUrl}</span>
                             </div>
 
@@ -134,7 +141,10 @@ export function LinkCard({ link, baseUrl }: LinkCardProps) {
                                 rel="noopener noreferrer"
                                 className="inline-flex max-w-full items-center gap-1.5 truncate text-white/40 text-xs transition-colors hover:text-white/65"
                             >
-                                <IconExternalLink className="size-3 shrink-0" />
+                                <IconExternalLink
+                                    aria-hidden="true"
+                                    className="size-3 shrink-0"
+                                />
                                 <span className="truncate">
                                     {link.original_url}
                                 </span>
@@ -152,7 +162,10 @@ export function LinkCard({ link, baseUrl }: LinkCardProps) {
                                             className="border-white/10 bg-white/3 text-white/70 hover:bg-white/8 hover:text-white"
                                             onClick={() => setEditOpen(true)}
                                         >
-                                            <IconPencil className="size-3.5" />
+                                            <IconPencil
+                                                aria-hidden="true"
+                                                className="size-3.5"
+                                            />
                                             Edit
                                         </Button>
                                     }
@@ -168,7 +181,10 @@ export function LinkCard({ link, baseUrl }: LinkCardProps) {
                                             className="border-red-500/20 bg-red-500/6 text-red-400/80 hover:border-red-500/30 hover:bg-red-500/15 hover:text-red-300"
                                             onClick={() => setDeleteOpen(true)}
                                         >
-                                            <IconTrash className="size-3.5" />
+                                            <IconTrash
+                                                aria-hidden="true"
+                                                className="size-3.5"
+                                            />
                                             Delete
                                         </Button>
                                     }
@@ -190,11 +206,22 @@ export function LinkCard({ link, baseUrl }: LinkCardProps) {
                                         onClick={() => {
                                             void handleCopy();
                                         }}
+                                        aria-label={
+                                            copied
+                                                ? "Copied short URL"
+                                                : "Copy short URL"
+                                        }
                                     >
                                         {copied ? (
-                                            <IconCheck className="size-3.5" />
+                                            <IconCheck
+                                                aria-hidden="true"
+                                                className="size-3.5"
+                                            />
                                         ) : (
-                                            <IconCopy className="size-3.5" />
+                                            <IconCopy
+                                                aria-hidden="true"
+                                                className="size-3.5"
+                                            />
                                         )}
                                         {copied ? "Copied!" : "Copy URL"}
                                     </Button>
@@ -211,8 +238,12 @@ export function LinkCard({ link, baseUrl }: LinkCardProps) {
                                         size="sm"
                                         className="h-8 text-white/60 text-xs hover:bg-white/8 hover:text-white"
                                         onClick={downloadQrCode}
+                                        aria-label="Download QR code"
                                     >
-                                        <IconDownload className="size-3.5" />
+                                        <IconDownload
+                                            aria-hidden="true"
+                                            className="size-3.5"
+                                        />
                                         QR Code
                                     </Button>
                                 }
@@ -233,8 +264,12 @@ export function LinkCard({ link, baseUrl }: LinkCardProps) {
                                                 href={shortUrl}
                                                 target="_blank"
                                                 rel="noopener noreferrer"
+                                                aria-label="Open link in new tab"
                                             >
-                                                <IconExternalLink className="size-3.5" />
+                                                <IconExternalLink
+                                                    aria-hidden="true"
+                                                    className="size-3.5"
+                                                />
                                                 Open link
                                             </a>
                                         }
@@ -256,8 +291,12 @@ export function LinkCard({ link, baseUrl }: LinkCardProps) {
                                             size="sm"
                                             className="h-8 text-white/60 text-xs hover:bg-white/8 hover:text-white"
                                             onClick={() => setEditOpen(true)}
+                                            aria-label="Edit link"
                                         >
-                                            <IconPencil className="size-3.5" />
+                                            <IconPencil
+                                                aria-hidden="true"
+                                                className="size-3.5"
+                                            />
                                             Edit
                                         </Button>
                                     }
@@ -291,7 +330,10 @@ export function LinkCard({ link, baseUrl }: LinkCardProps) {
                                         onClick={handleOpenAnalytics}
                                     >
                                         View analytics
-                                        <IconArrowRight className="size-3.5" />
+                                        <IconArrowRight
+                                            aria-hidden="true"
+                                            className="size-3.5"
+                                        />
                                     </Button>
                                 }
                             />
@@ -340,7 +382,10 @@ export function LinkCard({ link, baseUrl }: LinkCardProps) {
                             </p>
                         </div>
                         <Button className="w-full" onClick={downloadQrCode}>
-                            <IconDownload data-icon="inline-start" />
+                            <IconDownload
+                                aria-hidden="true"
+                                data-icon="inline-start"
+                            />
                             Download PNG
                         </Button>
                     </div>

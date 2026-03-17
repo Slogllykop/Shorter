@@ -86,7 +86,10 @@ export function CreateLinkDialog() {
                             <DialogTrigger
                                 render={
                                     <Button>
-                                        <IconPlus data-icon="inline-start" />
+                                        <IconPlus
+                                            aria-hidden="true"
+                                            data-icon="inline-start"
+                                        />
                                         New Link
                                     </Button>
                                 }
@@ -145,7 +148,7 @@ export function CreateLinkDialog() {
                                                 onClick={handleRandomize}
                                                 disabled={isPending}
                                             >
-                                                <IconRefresh />
+                                                <IconRefresh aria-hidden="true" />
                                             </Button>
                                         }
                                     />
@@ -181,6 +184,7 @@ export function CreateLinkDialog() {
                             <Button type="submit" disabled={isPending}>
                                 {isPending ? (
                                     <IconLoader2
+                                        aria-hidden="true"
                                         data-icon="inline-start"
                                         className="animate-spin"
                                     />

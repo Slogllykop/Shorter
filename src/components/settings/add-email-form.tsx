@@ -4,6 +4,7 @@ import { IconLoader2, IconPlus } from "@tabler/icons-react";
 import { useState } from "react";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 export function AddEmailForm({
     addEmail,
@@ -23,21 +24,28 @@ export function AddEmailForm({
     };
 
     return (
-        <form onSubmit={handleSubmit} className="mb-6 flex gap-2">
-            <Input
-                type="email"
-                placeholder="Add email to whitelist..."
-                value={newEmail}
-                onChange={(e) => setNewEmail(e.target.value)}
-                disabled={isPending}
-                required
-            />
+        <form onSubmit={handleSubmit} className="mb-6 flex items-end gap-2">
+            <div className="flex flex-1 flex-col gap-2">
+                <Label htmlFor="add-email-input">Email address</Label>
+                <Input
+                    id="add-email-input"
+                    type="email"
+                    placeholder="Add email to whitelist..."
+                    value={newEmail}
+                    onChange={(e) => setNewEmail(e.target.value)}
+                    disabled={isPending}
+                    required
+                />
+            </div>
             <Button type="submit" disabled={isPending || !newEmail}>
                 {isPending ? (
-                    <IconLoader2 className="h-4 w-4 animate-spin" />
+                    <IconLoader2
+                        aria-hidden="true"
+                        className="h-4 w-4 animate-spin"
+                    />
                 ) : (
                     <>
-                        <IconPlus className="mr-2 h-4 w-4" />
+                        <IconPlus aria-hidden="true" className="mr-2 h-4 w-4" />
                         Add
                     </>
                 )}

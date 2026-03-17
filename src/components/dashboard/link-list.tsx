@@ -25,7 +25,10 @@ export function LinkList({ links, baseUrl }: LinkListProps) {
     if (links.length === 0) {
         return (
             <div className="flex flex-col items-center justify-center gap-3 rounded-lg border border-dashed py-16">
-                <IconLink className="size-8 text-muted-foreground" />
+                <IconLink
+                    aria-hidden="true"
+                    className="size-8 text-muted-foreground"
+                />
                 <p className="text-muted-foreground text-sm">
                     No links yet. Create your first short link.
                 </p>
@@ -53,11 +56,15 @@ export function LinkList({ links, baseUrl }: LinkListProps) {
             <div className="rounded-[1.25rem] border border-white/10 bg-white/4 p-3 sm:p-4">
                 <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
                     <div className="relative flex-1">
-                        <IconSearch className="-translate-y-1/2 pointer-events-none absolute top-1/2 left-3.5 size-4 text-white/44" />
+                        <IconSearch
+                            aria-hidden="true"
+                            className="-translate-y-1/2 pointer-events-none absolute top-1/2 left-3.5 size-4 text-white/44"
+                        />
                         <Input
                             value={query}
                             onChange={(event) => setQuery(event.target.value)}
                             placeholder="Search by slug, title, or destination URL"
+                            aria-label="Search links"
                             className="h-11 rounded-2xl border-white/12 bg-black/24 pl-10 text-white placeholder:text-white/40"
                         />
                         <TooltipProvider>
@@ -68,9 +75,13 @@ export function LinkList({ links, baseUrl }: LinkListProps) {
                                             <button
                                                 type="button"
                                                 onClick={() => setQuery("")}
+                                                aria-label="Clear search"
                                                 className="-translate-y-1/2 absolute top-1/2 right-3 inline-flex size-7 items-center justify-center rounded-full text-white/48 transition-colors hover:bg-white/8 hover:text-white"
                                             >
-                                                <IconX className="size-4" />
+                                                <IconX
+                                                    aria-hidden="true"
+                                                    className="size-4"
+                                                />
                                             </button>
                                         }
                                     />
@@ -92,7 +103,10 @@ export function LinkList({ links, baseUrl }: LinkListProps) {
 
             {filteredLinks.length === 0 ? (
                 <div className="flex flex-col items-center justify-center gap-3 rounded-[1.25rem] border border-white/12 border-dashed bg-white/4 py-16 text-center">
-                    <IconSearch className="size-8 text-white/40" />
+                    <IconSearch
+                        aria-hidden="true"
+                        className="size-8 text-white/40"
+                    />
                     <p className="font-medium text-white">No matching links</p>
                     <p className="max-w-sm text-sm text-white/56">
                         Try a slug, title, or part of the destination URL.

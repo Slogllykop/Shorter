@@ -5,6 +5,7 @@ import { useCallback, useState, useTransition } from "react";
 import { sendOtp } from "@/app/(dashboard)/actions";
 import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
+import { Label } from "@/components/ui/label";
 
 type Step = "email" | "sent";
 
@@ -62,26 +63,36 @@ export function LoginForm({ initialError }: LoginFormProps) {
                         }}
                         className="flex flex-col gap-4"
                     >
-                        <Input
-                            type="email"
-                            placeholder="you@example.com"
-                            value={email}
-                            onChange={(e) => setEmail(e.target.value)}
-                            autoFocus
-                            disabled={isPending}
-                            required
-                        />
+                        <div className="flex flex-col gap-2">
+                            <Label htmlFor="login-email">Email address</Label>
+                            <Input
+                                id="login-email"
+                                type="email"
+                                placeholder="you@example.com"
+                                value={email}
+                                onChange={(e) => setEmail(e.target.value)}
+                                disabled={isPending}
+                                required
+                                aria-describedby={
+                                    error ? "login-error" : undefined
+                                }
+                            />
+                        </div>
                         <Button
                             type="submit"
                             disabled={isPending || !email.trim()}
                         >
                             {isPending ? (
                                 <IconLoader2
+                                    aria-hidden="true"
                                     data-icon="inline-start"
                                     className="animate-spin"
                                 />
                             ) : (
-                                <IconMail data-icon="inline-start" />
+                                <IconMail
+                                    aria-hidden="true"
+                                    data-icon="inline-start"
+                                />
                             )}
                             Send Login Link
                         </Button>
@@ -98,14 +109,21 @@ export function LoginForm({ initialError }: LoginFormProps) {
                             onClick={handleBack}
                             disabled={isPending}
                         >
-                            <IconArrowLeft data-icon="inline-start" />
+                            <IconArrowLeft
+                                aria-hidden="true"
+                                data-icon="inline-start"
+                            />
                             Back
                         </Button>
                     </div>
                 )}
 
                 {error ? (
-                    <p className="text-center text-destructive text-sm">
+                    <p
+                        id="login-error"
+                        className="text-center text-destructive text-sm"
+                        role="alert"
+                    >
                         {error}
                     </p>
                 ) : null}

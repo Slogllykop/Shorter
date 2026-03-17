@@ -23,7 +23,7 @@ export function Header({ email }: HeaderProps) {
         <header className="border-border/40 border-b">
             <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
                 <div className="flex items-center gap-3">
-                    <IconLink className="size-5" />
+                    <IconLink aria-hidden="true" className="size-5" />
                     <h1 className="font-semibold text-lg tracking-tight">
                         Shorter
                     </h1>
@@ -44,7 +44,10 @@ export function Header({ email }: HeaderProps) {
                                         nativeButton={false}
                                         render={
                                             <Link href="/settings">
-                                                <IconSettings data-icon="inline-start" />
+                                                <IconSettings
+                                                    aria-hidden="true"
+                                                    data-icon="inline-start"
+                                                />
                                                 Settings
                                             </Link>
                                         }
@@ -63,7 +66,10 @@ export function Header({ email }: HeaderProps) {
                                         onClick={signOut}
                                         disabled={isSigningOut}
                                     >
-                                        <IconLogout data-icon="inline-start" />
+                                        <IconLogout
+                                            aria-hidden="true"
+                                            data-icon="inline-start"
+                                        />
                                         Sign out
                                     </Button>
                                 }

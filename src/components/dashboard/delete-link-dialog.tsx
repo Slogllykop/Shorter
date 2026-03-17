@@ -72,6 +72,7 @@ export function DeleteLinkDialog({
                     >
                         {isPending ? (
                             <IconLoader2
+                                aria-hidden="true"
                                 data-icon="inline-start"
                                 className="animate-spin"
                             />

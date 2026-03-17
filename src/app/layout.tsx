@@ -13,7 +13,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-    title: "Shorter — URL Shortener",
+    title: "Shorter - URL Shortener",
     description: "Self-hosted URL shortener built with Next.js",
 };
 

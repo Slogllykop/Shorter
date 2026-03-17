@@ -129,7 +129,7 @@ export function RedirectClient({ slug }: RedirectClientProps) {
                         />
                     </svg>
                 </div>
-                <div>
+                <div role="alert">
                     <h2 className="font-semibold text-white text-xl">
                         Redirect stuck
                     </h2>
@@ -140,7 +140,10 @@ export function RedirectClient({ slug }: RedirectClientProps) {
     }
 
     return (
-        <div className="flex flex-col items-center gap-6">
+        <section
+            className="flex flex-col items-center gap-6"
+            aria-label="Loading destination"
+        >
             <div className="relative">
                 <div className="h-16 w-16 animate-spin rounded-full border-4 border-white/10" />
                 <div className="absolute top-0 right-0 bottom-0 left-0 animate-spin rounded-full border-white border-t-4 border-l-4" />
@@ -150,6 +153,6 @@ export function RedirectClient({ slug }: RedirectClientProps) {
                     Just a moment, taking you there
                 </h2>
             </div>
-        </div>
+        </section>
     );
 }
