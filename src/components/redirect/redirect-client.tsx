@@ -147,11 +147,8 @@ export function RedirectClient({ slug }: RedirectClientProps) {
             </div>
             <div className="flex flex-col items-center gap-2">
                 <h2 className="font-semibold text-white text-xl">
-                    Taking you there
+                    Just a moment, taking you there
                 </h2>
-                <p className="text-sm text-white/60">
-                    Just a moment, preparing your destination...
-                </p>
             </div>
         </div>
     );
