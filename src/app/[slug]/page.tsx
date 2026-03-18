@@ -12,13 +12,13 @@ export async function generateMetadata({
 
     if (!link) {
         return {
-            title: "Link Not Found | Breve",
+            title: "Link Not Found",
             description:
                 "The link you are looking for does not exist or has been removed.",
         };
     }
 
-    const title = "Secure Redirect | Breve";
+    const title = "Secure Redirect";
     const description =
         "You are being redirected securely via Breve, the premium URL shortener.";
 

@@ -17,7 +17,7 @@ export async function generateMetadata({
     const linkId = parseInt(id, 10);
 
     if (Number.isNaN(linkId)) {
-        return { title: "Invalid Link | Breve" };
+        return { title: "Invalid Link" };
     }
 
     const supabase = await createClient();

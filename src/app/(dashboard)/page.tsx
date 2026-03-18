@@ -7,7 +7,7 @@ import { createClient } from "@/lib/supabase/server";
 import { getLinks } from "./actions";
 
 export const metadata: Metadata = {
-    title: "Dashboard - Breve",
+    title: "Dashboard",
     description:
         "Manage your links and view detailed analytics on your Breve dashboard.",
 };
