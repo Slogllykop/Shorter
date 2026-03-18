@@ -52,7 +52,7 @@ export default async function Image() {
                     opacity: 0.8,
                 }}
             >
-                Premium URL Shortener
+                Simple and Self-hosted URL Shortener
             </div>
         </div>,
         {

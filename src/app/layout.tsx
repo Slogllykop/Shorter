@@ -15,11 +15,11 @@ const geistMono = Geist_Mono({
 export const metadata: Metadata = {
     metadataBase: new URL("https://a.isdevs.cv"),
     title: {
-        default: "Shorter - Premium URL Shortener",
+        default: "Shorter",
         template: "%s | Shorter",
     },
     description:
-        "A fast, secure, and premium URL shortener for all your links.",
+        "A fast, secure, premium and self-hosted URL shortener for all your links.",
     keywords: [
         "url shortener",
         "link shortener",
@@ -39,15 +39,15 @@ export const metadata: Metadata = {
         locale: "en_US",
         url: "/",
         siteName: "Shorter",
-        title: "Shorter - Premium URL Shortener",
+        title: "Shorter",
         description:
-            "A fast, secure, and premium URL shortener for all your links.",
+            "A fast, secure, premium and self-hosted URL shortener for all your links.",
     },
     twitter: {
         card: "summary_large_image",
-        title: "Shorter - Premium URL Shortener",
+        title: "Shorter",
         description:
-            "A fast, secure, and premium URL shortener for all your links.",
+            "A fast, secure, premium and self-hosted URL shortener for all your links.",
         creator: "@shorter",
     },
     icons: {
