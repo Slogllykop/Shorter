@@ -1,5 +1,6 @@
 "use server";
 
+import { cacheAnalytics, getCachedAnalytics } from "@/lib/redis/cache";
 import { createClient } from "@/lib/supabase/server";
 
 export type TimeSeriesData = {
@@ -41,10 +42,18 @@ function toDateKey(value: unknown) {
     return parsed.toISOString().slice(0, 10);
 }
 
+/**
+ * Fetches analytics data for a link. Checks Redis cache first (60s TTL),
+ * falling back to Supabase on cache miss.
+ */
 export async function getLinkAnalytics(
     linkId: number,
     period: "7d" | "30d" | "90d" | "all" = "30d",
 ): Promise<LinkAnalytics> {
+    // Check Redis cache first
+    const cached = await getCachedAnalytics(linkId, period);
+    if (cached) return cached;
+
     const supabase = await createClient();
 
     const [timeResponse, deviceResponse, countryResponse] = await Promise.all([
@@ -103,7 +112,7 @@ export async function getLinkAnalytics(
         );
     }
 
-    return {
+    const result: LinkAnalytics = {
         timeSeries: Array.from(timeSeriesMap.entries())
             .map(([date, clicks]) => ({ date, clicks }))
             .sort((a, b) => a.date.localeCompare(b.date)),
@@ -114,4 +123,9 @@ export async function getLinkAnalytics(
             .map(([country, clicks]) => ({ country, clicks }))
             .sort((a, b) => b.clicks - a.clicks),
     };
+
+    // Populate Redis cache for fast subsequent reads
+    await cacheAnalytics(linkId, period, result);
+
+    return result;
 }

@@ -43,7 +43,7 @@ export function LoginForm({ initialError }: LoginFormProps) {
     }, []);
 
     return (
-        <div className="flex min-h-screen items-center justify-center">
+        <div className="flex min-h-dvh items-center justify-center">
             <div className="flex w-full max-w-sm flex-col gap-6 px-4">
                 <div className="flex flex-col items-center gap-4 text-center">
                     <Image

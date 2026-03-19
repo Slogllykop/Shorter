@@ -1,6 +1,5 @@
 "use client";
 
-import { IconLoader2 } from "@tabler/icons-react";
 import { useCallback, useTransition } from "react";
 import { toast } from "sonner";
 import { deleteLink } from "@/app/(dashboard)/actions";
@@ -21,25 +20,38 @@ type DeleteLinkDialogProps = {
     onOpenChange: (open: boolean) => void;
 };
 
+/** Confirmation dialog for deleting a link. Closes immediately and runs deletion in background. */
 export function DeleteLinkDialog({
     linkId,
     slug,
     open,
     onOpenChange,
 }: DeleteLinkDialogProps) {
-    const [isPending, startTransition] = useTransition();
+    const [, startTransition] = useTransition();
 
+    /** Closes the dialog instantly and fires the delete action with a toast. */
     const handleDelete = useCallback(() => {
-        startTransition(async () => {
-            const result = await deleteLink(linkId, slug);
+        onOpenChange(false);
 
-            if (result.success) {
-                toast.success("Link deleted successfully.");
-                onOpenChange(false);
-            } else {
-                toast.error(result.error ?? "Failed to delete link.");
-            }
-        });
+        toast.promise(
+            new Promise<void>((resolve, reject) => {
+                startTransition(async () => {
+                    const result = await deleteLink(linkId, slug);
+                    if (result.success) {
+                        resolve();
+                    } else {
+                        reject(
+                            new Error(result.error ?? "Failed to delete link."),
+                        );
+                    }
+                });
+            }),
+            {
+                loading: "Deleting link...",
+                success: "Link deleted successfully.",
+                error: (err: Error) => err.message,
+            },
+        );
     }, [linkId, slug, onOpenChange]);
 
     return (
@@ -61,22 +73,10 @@ export function DeleteLinkDialog({
                     <Button
                         variant="outline"
                         onClick={() => onOpenChange(false)}
-                        disabled={isPending}
                     >
                         Cancel
                     </Button>
-                    <Button
-                        variant="destructive"
-                        onClick={handleDelete}
-                        disabled={isPending}
-                    >
-                        {isPending ? (
-                            <IconLoader2
-                                aria-hidden="true"
-                                data-icon="inline-start"
-                                className="animate-spin"
-                            />
-                        ) : null}
+                    <Button variant="destructive" onClick={handleDelete}>
                         Delete
                     </Button>
                 </DialogFooter>

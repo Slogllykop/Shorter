@@ -73,7 +73,7 @@ export function CountryChart({ data }: { data: CountryData[] }) {
                     tickLine={false}
                     className="fill-muted-foreground font-medium"
                     fontSize={12}
-                    width={180}
+                    width={120}
                     interval={0}
                 />
                 <ChartTooltip

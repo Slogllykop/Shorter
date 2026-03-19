@@ -78,7 +78,7 @@ export default async function AnalyticsPage({
 
     if (error || !links || links.length === 0) {
         return (
-            <div className="flex min-h-screen flex-col items-center justify-center gap-4">
+            <div className="flex min-h-dvh flex-col items-center justify-center gap-4">
                 <p className="text-muted-foreground">Link not found.</p>
                 <Button
                     render={
@@ -107,7 +107,7 @@ export default async function AnalyticsPage({
     const baseUrl = `${protocol}://${host}`;
 
     return (
-        <div className="min-h-screen">
+        <div className="min-h-dvh">
             <Header email={user.email ?? ""} />
 
             <main className="mx-auto max-w-5xl px-6 py-8">

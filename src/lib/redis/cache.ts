@@ -1,3 +1,4 @@
+import type { LinkAnalytics } from "@/app/(dashboard)/links/[id]/actions";
 import { redis } from "./client";
 
 type CachedLink = {
@@ -35,4 +36,40 @@ export async function getCachedClickCount(
     linkId: number,
 ): Promise<number | null> {
     return redis.get<number>(`${CLICKS_PREFIX}${linkId}`);
+}
+
+// ---- Analytics Cache ----
+
+const ANALYTICS_PREFIX = "analytics:";
+const ANALYTICS_TTL = 60; // seconds
+
+/** Cache analytics data in Redis with a 60-second TTL for fast reads. */
+export async function cacheAnalytics(
+    linkId: number,
+    period: string,
+    data: LinkAnalytics,
+): Promise<void> {
+    await redis.set(
+        `${ANALYTICS_PREFIX}${linkId}:${period}`,
+        JSON.stringify(data),
+        { ex: ANALYTICS_TTL },
+    );
+}
+
+/** Retrieve cached analytics data from Redis if available. */
+export async function getCachedAnalytics(
+    linkId: number,
+    period: string,
+): Promise<LinkAnalytics | null> {
+    const raw = await redis.get<string>(
+        `${ANALYTICS_PREFIX}${linkId}:${period}`,
+    );
+    if (!raw) return null;
+    try {
+        return typeof raw === "string"
+            ? JSON.parse(raw)
+            : (raw as unknown as LinkAnalytics);
+    } catch {
+        return null;
+    }
 }

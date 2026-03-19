@@ -11,70 +11,68 @@ import {
     IconTrash,
 } from "@tabler/icons-react";
 import Image from "next/image";
-import { useRouter } from "next/navigation";
+import Link from "next/link";
 import { useRef, useState } from "react";
 import type { LinkData } from "@/app/(dashboard)/actions";
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
-import {
-    Dialog,
-    DialogContent,
-    DialogHeader,
-    DialogTitle,
-} from "@/components/ui/dialog";
 import {
     Tooltip,
     TooltipContent,
     TooltipProvider,
     TooltipTrigger,
 } from "@/components/ui/tooltip";
+import { copyToClipboard, downloadCanvasAsPng } from "@/lib/client-utils";
 import { DeleteLinkDialog } from "./delete-link-dialog";
 import { EditLinkDialog } from "./edit-link-dialog";
 import { QrCode } from "./qr-code";
+import { QrDialog } from "./qr-dialog";
 
 type LinkCardProps = {
     link: LinkData;
     baseUrl: string;
 };
 
+/** Card component for displaying a single short link with actions. */
 export function LinkCard({ link, baseUrl }: LinkCardProps) {
-    const router = useRouter();
     const [editOpen, setEditOpen] = useState(false);
     const [deleteOpen, setDeleteOpen] = useState(false);
     const [qrOpen, setQrOpen] = useState(false);
     const [copied, setCopied] = useState(false);
     const qrRef = useRef<HTMLCanvasElement>(null);
+    const downloadQrRef = useRef<HTMLCanvasElement>(null);
 
     const shortUrl = `${baseUrl}/${link.slug}`;
+    const analyticsHref = `/links/${link.id}`;
 
+    /** Copies the short URL to clipboard with visual feedback. */
     async function handleCopy() {
-        await navigator.clipboard.writeText(shortUrl);
-        setCopied(true);
-        setTimeout(() => setCopied(false), 2000);
+        const success = await copyToClipboard(shortUrl);
+        if (success) {
+            setCopied(true);
+            setTimeout(() => setCopied(false), 2000);
+        }
     }
 
-    function handleOpenAnalytics() {
-        router.push(`/links/${link.id}`);
-    }
-
+    /** Downloads the high-res (1024px) QR code as a PNG file. */
     function downloadQrCode() {
-        const canvas = qrRef.current;
+        const canvas = downloadQrRef.current;
         if (!canvas) return;
-
-        const objectUrl = canvas.toDataURL("image/png");
-        const anchor = document.createElement("a");
-        anchor.href = objectUrl;
-        anchor.download = `${link.slug}-qr.png`;
-        anchor.click();
+        downloadCanvasAsPng(canvas, `${link.slug}-qr.png`);
     }
 
     return (
         <>
+            {/* Hidden high-res QR for download (1024px) */}
+            <div className="hidden">
+                <QrCode ref={downloadQrRef} url={shortUrl} size={1024} />
+            </div>
+
             <article className="group relative overflow-hidden rounded-2xl border border-white/8 transition-all duration-300 hover:border-white/[0.14] hover:shadow-[0_0_15px_rgba(255,255,255,0.03)]">
                 <TooltipProvider>
                     {/* Main Content */}
-                    <div className="flex gap-5 p-5">
-                        {/* QR Code */}
+                    <div className="flex gap-4 p-4 sm:gap-5 sm:p-5">
+                        {/* QR Code - hidden on very small screens */}
                         <Tooltip>
                             <TooltipTrigger
                                 render={
@@ -82,7 +80,7 @@ export function LinkCard({ link, baseUrl }: LinkCardProps) {
                                         type="button"
                                         onClick={() => setQrOpen(true)}
                                         aria-label="View QR code"
-                                        className="group/qr relative shrink-0 cursor-pointer self-start rounded-xl border border-white/10 bg-white p-0 shadow-[0_8px_24px_rgba(0,0,0,0.3)] transition-transform duration-200 hover:scale-105"
+                                        className="group/qr relative hidden shrink-0 cursor-pointer self-start rounded-xl border border-white/10 bg-white p-0 shadow-[0_8px_24px_rgba(0,0,0,0.3)] transition-transform duration-200 hover:scale-105 sm:block"
                                     >
                                         <QrCode
                                             ref={qrRef}
@@ -103,20 +101,20 @@ export function LinkCard({ link, baseUrl }: LinkCardProps) {
                         </Tooltip>
 
                         {/* Info Column */}
-                        <div className="flex min-w-0 flex-1 flex-col gap-3">
+                        <div className="flex min-w-0 flex-1 flex-col gap-2 sm:gap-3">
                             {/* Title + Click Badge */}
-                            <div className="flex items-start gap-3">
-                                <div className="min-w-0">
-                                    <h3 className="truncate font-medium text-[15px] text-white leading-snug">
+                            <div className="flex flex-wrap items-start gap-2 sm:gap-3">
+                                <div className="min-w-0 flex-1">
+                                    <h3 className="truncate font-medium text-sm text-white leading-snug sm:text-[15px]">
                                         {link.title || "Untitled link"}
                                     </h3>
-                                    <p className="mt-0.5 font-mono text-sm text-white/50">
+                                    <p className="mt-0.5 font-mono text-white/50 text-xs sm:text-sm">
                                         /{link.slug}
                                     </p>
                                 </div>
                                 <Badge
                                     variant="secondary"
-                                    className="shrink-0 bg-white/[0.07] font-mono text-white/80 tabular-nums"
+                                    className="shrink-0 bg-white/[0.07] font-mono text-white/80 text-xs tabular-nums"
                                 >
                                     {link.click_count.toLocaleString()}{" "}
                                     {link.click_count === 1
@@ -126,7 +124,7 @@ export function LinkCard({ link, baseUrl }: LinkCardProps) {
                             </div>
 
                             {/* Short URL */}
-                            <div className="flex items-center gap-1.5 text-emerald-400/80 text-sm">
+                            <div className="flex items-center gap-1.5 text-emerald-400/80 text-xs sm:text-sm">
                                 <Image
                                     src="/logo.png"
                                     alt=""
@@ -198,152 +196,172 @@ export function LinkCard({ link, baseUrl }: LinkCardProps) {
                     </div>
 
                     {/* Bottom Actions Bar */}
-                    <div className="flex flex-wrap items-center gap-2 border-white/6 border-t bg-white/2 px-5 py-3">
-                        <Tooltip>
-                            <TooltipTrigger
-                                render={
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className="h-8 text-white/60 text-xs hover:bg-white/8 hover:text-white"
-                                        onClick={() => {
-                                            void handleCopy();
-                                        }}
-                                        aria-label={
-                                            copied
-                                                ? "Copied short URL"
-                                                : "Copy short URL"
-                                        }
-                                    >
-                                        {copied ? (
-                                            <IconCheck
-                                                aria-hidden="true"
-                                                className="size-3.5"
-                                            />
-                                        ) : (
-                                            <IconCopy
-                                                aria-hidden="true"
-                                                className="size-3.5"
-                                            />
-                                        )}
-                                        {copied ? "Copied!" : "Copy URL"}
-                                    </Button>
-                                }
-                            />
-                            <TooltipContent>Copy the short link</TooltipContent>
-                        </Tooltip>
-
-                        <Tooltip>
-                            <TooltipTrigger
-                                render={
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className="h-8 text-white/60 text-xs hover:bg-white/8 hover:text-white"
-                                        onClick={downloadQrCode}
-                                        aria-label="Download QR code"
-                                    >
-                                        <IconDownload
-                                            aria-hidden="true"
-                                            className="size-3.5"
-                                        />
-                                        QR Code
-                                    </Button>
-                                }
-                            />
-                            <TooltipContent>Download QR code</TooltipContent>
-                        </Tooltip>
-
-                        <Tooltip>
-                            <TooltipTrigger
-                                render={
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        className="h-8 text-white/60 text-xs hover:bg-white/8 hover:text-white"
-                                        nativeButton={false}
-                                        render={
-                                            <a
-                                                href={shortUrl}
-                                                target="_blank"
-                                                rel="noopener noreferrer"
-                                                aria-label="Open link in new tab"
-                                            >
-                                                <IconExternalLink
+                    <div className="flex flex-col gap-3 border-white/6 border-t bg-white/2 px-4 py-3 sm:flex-row sm:flex-wrap sm:items-center sm:gap-2 sm:px-5">
+                        {/* Primary Actions Group */}
+                        <div className="flex flex-wrap items-center gap-2">
+                            <Tooltip>
+                                <TooltipTrigger
+                                    render={
+                                        <Button
+                                            variant="ghost"
+                                            size="sm"
+                                            className="h-8 flex-1 text-white/70 text-xs hover:bg-white/8 hover:text-white sm:flex-initial"
+                                            onClick={() => {
+                                                void handleCopy();
+                                            }}
+                                            aria-label={
+                                                copied
+                                                    ? "Copied short URL"
+                                                    : "Copy short URL"
+                                            }
+                                        >
+                                            {copied ? (
+                                                <IconCheck
                                                     aria-hidden="true"
                                                     className="size-3.5"
                                                 />
-                                                Open link
-                                            </a>
-                                        }
-                                    />
-                                }
-                            />
-                            <TooltipContent>
-                                Open link in new tab
-                            </TooltipContent>
-                        </Tooltip>
+                                            ) : (
+                                                <IconCopy
+                                                    aria-hidden="true"
+                                                    className="size-3.5"
+                                                />
+                                            )}
+                                            {copied ? "Copied!" : "Copy URL"}
+                                        </Button>
+                                    }
+                                />
+                                <TooltipContent>
+                                    Copy the short link
+                                </TooltipContent>
+                            </Tooltip>
 
-                        {/* Mobile-only Edit/Delete */}
-                        <div className="flex items-center gap-1 sm:hidden">
                             <Tooltip>
                                 <TooltipTrigger
                                     render={
                                         <Button
                                             variant="ghost"
                                             size="sm"
-                                            className="h-8 text-white/60 text-xs hover:bg-white/8 hover:text-white"
-                                            onClick={() => setEditOpen(true)}
-                                            aria-label="Edit link"
+                                            className="h-8 flex-1 text-white/70 text-xs hover:bg-white/8 hover:text-white sm:flex-initial"
+                                            onClick={downloadQrCode}
+                                            aria-label="Download QR code"
                                         >
-                                            <IconPencil
+                                            <IconDownload
                                                 aria-hidden="true"
                                                 className="size-3.5"
                                             />
-                                            Edit
+                                            QR Code
                                         </Button>
                                     }
                                 />
-                                <TooltipContent>Edit link</TooltipContent>
+                                <TooltipContent>
+                                    Download QR code
+                                </TooltipContent>
                             </Tooltip>
+
                             <Tooltip>
                                 <TooltipTrigger
                                     render={
                                         <Button
                                             variant="ghost"
                                             size="sm"
-                                            className="h-8 text-red-400/70 text-xs hover:bg-red-500/10 hover:text-red-300"
-                                            onClick={() => setDeleteOpen(true)}
-                                        >
-                                            <IconTrash className="size-3.5" />
-                                            Delete
-                                        </Button>
+                                            className="h-8 flex-1 text-white/70 text-xs hover:bg-white/8 hover:text-white sm:flex-initial"
+                                            nativeButton={false}
+                                            render={
+                                                <a
+                                                    href={shortUrl}
+                                                    target="_blank"
+                                                    rel="noopener noreferrer"
+                                                    aria-label="Open link in new tab"
+                                                >
+                                                    <IconExternalLink
+                                                        aria-hidden="true"
+                                                        className="size-3.5"
+                                                    />
+                                                    Open link
+                                                </a>
+                                            }
+                                        />
                                     }
                                 />
-                                <TooltipContent>Delete link</TooltipContent>
+                                <TooltipContent>
+                                    Open link in new tab
+                                </TooltipContent>
                             </Tooltip>
                         </div>
 
-                        <Tooltip>
-                            <TooltipTrigger
-                                render={
-                                    <Button
-                                        size="sm"
-                                        className="ml-auto h-8 bg-white text-black text-xs hover:bg-white/90"
-                                        onClick={handleOpenAnalytics}
-                                    >
-                                        View analytics
-                                        <IconArrowRight
-                                            aria-hidden="true"
-                                            className="size-3.5"
+                        {/* Secondary Actions Group */}
+                        <div className="flex items-center justify-between sm:ml-auto">
+                            {/* Mobile-only Edit/Delete */}
+                            <div className="flex items-center gap-2 sm:hidden">
+                                <Tooltip>
+                                    <TooltipTrigger
+                                        render={
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                className="h-8 text-white/70 text-xs hover:bg-white/8 hover:text-white"
+                                                onClick={() =>
+                                                    setEditOpen(true)
+                                                }
+                                                aria-label="Edit link"
+                                            >
+                                                <IconPencil
+                                                    aria-hidden="true"
+                                                    className="size-3.5"
+                                                />
+                                                Edit
+                                            </Button>
+                                        }
+                                    />
+                                    <TooltipContent>Edit link</TooltipContent>
+                                </Tooltip>
+                                <Tooltip>
+                                    <TooltipTrigger
+                                        render={
+                                            <Button
+                                                variant="ghost"
+                                                size="sm"
+                                                className="h-8 text-red-400/80 text-xs hover:bg-red-500/10 hover:text-red-300"
+                                                onClick={() =>
+                                                    setDeleteOpen(true)
+                                                }
+                                            >
+                                                <IconTrash className="size-3.5" />
+                                                Delete
+                                            </Button>
+                                        }
+                                    />
+                                    <TooltipContent>Delete link</TooltipContent>
+                                </Tooltip>
+                            </div>
+
+                            <Tooltip>
+                                <TooltipTrigger
+                                    render={
+                                        <Button
+                                            size="sm"
+                                            className="ml-auto h-8 bg-white text-black text-xs hover:bg-white/90"
+                                            nativeButton={false}
+                                            render={
+                                                <Link
+                                                    href={analyticsHref}
+                                                    prefetch
+                                                >
+                                                    View analytics
+                                                    <IconArrowRight
+                                                        aria-hidden="true"
+                                                        className="size-3.5"
+                                                    />
+                                                </Link>
+                                            }
                                         />
-                                    </Button>
-                                }
-                            />
-                            <TooltipContent>
-                                View detailed analytics
-                            </TooltipContent>
-                        </Tooltip>
+                                    }
+                                />
+                                <TooltipContent>
+                                    View detailed analytics
+                                </TooltipContent>
+                            </Tooltip>
+                        </div>
                     </div>
                 </TooltipProvider>
             </article>
@@ -361,39 +379,12 @@ export function LinkCard({ link, baseUrl }: LinkCardProps) {
                 onOpenChange={setDeleteOpen}
             />
 
-            <Dialog open={qrOpen} onOpenChange={setQrOpen}>
-                <DialogContent className="max-w-sm">
-                    <DialogHeader>
-                        <DialogTitle className="font-mono text-sm">
-                            /{link.slug}
-                        </DialogTitle>
-                    </DialogHeader>
-                    <div className="space-y-5 py-4">
-                        <div className="mx-auto aspect-square w-full max-w-[260px] rounded-[1.5rem] bg-white p-5 text-black">
-                            <QrCode
-                                url={shortUrl}
-                                size={220}
-                                className="rounded-[1rem]"
-                            />
-                        </div>
-                        <div className="space-y-2 text-center">
-                            <p className="font-medium text-sm text-white">
-                                This QR encodes the full absolute short URL.
-                            </p>
-                            <p className="truncate text-muted-foreground text-xs">
-                                {shortUrl}
-                            </p>
-                        </div>
-                        <Button className="w-full" onClick={downloadQrCode}>
-                            <IconDownload
-                                aria-hidden="true"
-                                data-icon="inline-start"
-                            />
-                            Download PNG
-                        </Button>
-                    </div>
-                </DialogContent>
-            </Dialog>
+            <QrDialog
+                slug={link.slug}
+                shortUrl={shortUrl}
+                open={qrOpen}
+                onOpenChange={setQrOpen}
+            />
         </>
     );
 }

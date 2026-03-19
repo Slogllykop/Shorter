@@ -3,87 +3,61 @@
 import { IconLogout, IconSettings } from "@tabler/icons-react";
 import Image from "next/image";
 import Link from "next/link";
-import { Button } from "@/components/ui/button";
-import { Separator } from "@/components/ui/seperator";
-import {
-    Tooltip,
-    TooltipContent,
-    TooltipProvider,
-    TooltipTrigger,
-} from "@/components/ui/tooltip";
 import { useAuth } from "@/hooks/use-auth";
 
 type HeaderProps = {
     email: string;
 };
 
+/** Dashboard header with logo, user email, settings link, and sign-out button. */
 export function Header({ email }: HeaderProps) {
-    const { signOut, isSigningOut } = useAuth();
+    const { signOut: signOutUser, isSigningOut: isPending } = useAuth();
 
     return (
         <header className="border-border/40 border-b">
-            <div className="mx-auto flex max-w-5xl items-center justify-between px-6 py-4">
-                <div className="flex items-center gap-3">
+            <div className="mx-auto flex max-w-5xl items-center justify-between px-4 py-3 sm:px-6 sm:py-4">
+                {/* Logo + Name */}
+                <div className="flex items-center gap-2 sm:gap-3">
                     <Image
                         src="/logo.png"
                         alt="Breve Logo"
                         width={30}
                         height={30}
-                        className="rounded-sm"
+                        className="rounded-sm shadow-md"
                     />
-                    <h1 className="font-semibold text-lg tracking-tight">
+                    <span className="font-semibold text-lg text-white tracking-tight">
                         Breve
-                    </h1>
+                    </span>
                 </div>
 
-                <div className="flex items-center gap-3">
-                    <span className="text-muted-foreground text-sm">
+                {/* Right Side: Email + Actions */}
+                <div className="flex items-center gap-2 sm:gap-3">
+                    {/* Email - truncated on mobile */}
+                    <span
+                        className="hidden max-w-[120px] truncate text-sm text-white/44 sm:inline sm:max-w-[200px] md:max-w-none"
+                        title={email}
+                    >
                         {email}
                     </span>
-                    <Separator orientation="vertical" className="h-5" />
-                    <TooltipProvider>
-                        <Tooltip>
-                            <TooltipTrigger
-                                render={
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        nativeButton={false}
-                                        render={
-                                            <Link href="/settings">
-                                                <IconSettings
-                                                    aria-hidden="true"
-                                                    data-icon="inline-start"
-                                                />
-                                                Settings
-                                            </Link>
-                                        }
-                                    />
-                                }
-                            />
-                            <TooltipContent>Manage preferences</TooltipContent>
-                        </Tooltip>
 
-                        <Tooltip>
-                            <TooltipTrigger
-                                render={
-                                    <Button
-                                        variant="ghost"
-                                        size="sm"
-                                        onClick={signOut}
-                                        disabled={isSigningOut}
-                                    >
-                                        <IconLogout
-                                            aria-hidden="true"
-                                            data-icon="inline-start"
-                                        />
-                                        Sign out
-                                    </Button>
-                                }
-                            />
-                            <TooltipContent>Log out of session</TooltipContent>
-                        </Tooltip>
-                    </TooltipProvider>
+                    <Link
+                        href="/settings"
+                        prefetch
+                        className="inline-flex h-8 items-center gap-1.5 rounded-md border border-white/10 bg-white/4 px-3 text-sm text-white/70 transition-colors hover:bg-white/8 hover:text-white sm:gap-2"
+                    >
+                        <IconSettings className="size-4" aria-hidden="true" />
+                        <span className="hidden sm:inline">Settings</span>
+                    </Link>
+
+                    <button
+                        type="button"
+                        onClick={signOutUser}
+                        disabled={isPending}
+                        className="inline-flex h-8 items-center gap-1.5 rounded-md border border-white/10 bg-white/4 px-3 text-sm text-white/70 transition-colors hover:bg-white/8 hover:text-white disabled:opacity-50 sm:gap-2"
+                    >
+                        <IconLogout className="size-4" aria-hidden="true" />
+                        <span className="hidden sm:inline">Sign Out</span>
+                    </button>
                 </div>
             </div>
         </header>

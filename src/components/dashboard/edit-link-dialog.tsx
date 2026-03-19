@@ -1,6 +1,6 @@
 "use client";
 
-import { IconLoader2, IconRefresh } from "@tabler/icons-react";
+import { IconRefresh } from "@tabler/icons-react";
 import { useCallback, useState, useTransition } from "react";
 import { toast } from "sonner";
 import type { LinkData } from "@/app/(dashboard)/actions";
@@ -30,6 +30,7 @@ type EditLinkDialogProps = {
     onOpenChange: (open: boolean) => void;
 };
 
+/** Dialog for editing a link's URL, slug, and title. Closes immediately on valid submit. */
 export function EditLinkDialog({
     link,
     open,
@@ -39,12 +40,13 @@ export function EditLinkDialog({
     const [slug, setSlug] = useState(link.slug);
     const [title, setTitle] = useState(link.title ?? "");
     const [error, setError] = useState<string | null>(null);
-    const [isPending, startTransition] = useTransition();
+    const [, startTransition] = useTransition();
 
     const handleRandomize = useCallback(() => {
         setSlug(generateSlug());
     }, []);
 
+    /** Validates input, closes the dialog immediately, and fires the update action. */
     const handleSubmit = useCallback(() => {
         setError(null);
 
@@ -67,22 +69,38 @@ export function EditLinkDialog({
             return;
         }
 
-        startTransition(async () => {
-            const result = await updateLink(
-                link.id,
-                slug.trim(),
-                url.trim(),
-                title.trim() || null,
-                link.slug,
-            );
+        const submitSlug = slug.trim();
+        const submitUrl = url.trim();
+        const submitTitle = title.trim() || null;
 
-            if (result.success) {
-                toast.success("Link updated successfully.");
-                onOpenChange(false);
-            } else {
-                setError(result.error ?? "Failed to update link.");
-            }
-        });
+        // Close dialog immediately for instant feel
+        onOpenChange(false);
+
+        toast.promise(
+            new Promise<void>((resolve, reject) => {
+                startTransition(async () => {
+                    const result = await updateLink(
+                        link.id,
+                        submitSlug,
+                        submitUrl,
+                        submitTitle,
+                        link.slug,
+                    );
+                    if (result.success) {
+                        resolve();
+                    } else {
+                        reject(
+                            new Error(result.error ?? "Failed to update link."),
+                        );
+                    }
+                });
+            }),
+            {
+                loading: "Updating link...",
+                success: "Link updated successfully.",
+                error: (err: Error) => err.message,
+            },
+        );
     }, [url, slug, title, link.id, link.slug, onOpenChange]);
 
     return (
@@ -109,7 +127,6 @@ export function EditLinkDialog({
                             type="url"
                             value={url}
                             onChange={(e) => setUrl(e.target.value)}
-                            disabled={isPending}
                             required
                         />
                     </div>
@@ -122,7 +139,6 @@ export function EditLinkDialog({
                                 type="text"
                                 value={slug}
                                 onChange={(e) => setSlug(e.target.value)}
-                                disabled={isPending}
                                 required
                             />
                             <TooltipProvider>
@@ -134,7 +150,6 @@ export function EditLinkDialog({
                                                 variant="outline"
                                                 size="icon"
                                                 onClick={handleRandomize}
-                                                disabled={isPending}
                                             >
                                                 <IconRefresh aria-hidden="true" />
                                             </Button>
@@ -160,7 +175,6 @@ export function EditLinkDialog({
                             type="text"
                             value={title}
                             onChange={(e) => setTitle(e.target.value)}
-                            disabled={isPending}
                         />
                     </div>
 
@@ -169,16 +183,7 @@ export function EditLinkDialog({
                     ) : null}
 
                     <DialogFooter>
-                        <Button type="submit" disabled={isPending}>
-                            {isPending ? (
-                                <IconLoader2
-                                    aria-hidden="true"
-                                    data-icon="inline-start"
-                                    className="animate-spin"
-                                />
-                            ) : null}
-                            Save Changes
-                        </Button>
+                        <Button type="submit">Save Changes</Button>
                     </DialogFooter>
                 </form>
             </DialogContent>

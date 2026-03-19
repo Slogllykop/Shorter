@@ -1,6 +1,6 @@
 "use client";
 
-import { IconLoader2, IconPlus, IconRefresh } from "@tabler/icons-react";
+import { IconPlus, IconRefresh } from "@tabler/icons-react";
 import { useCallback, useState, useTransition } from "react";
 import { toast } from "sonner";
 import { createLink } from "@/app/(dashboard)/actions";
@@ -24,18 +24,20 @@ import {
 } from "@/components/ui/tooltip";
 import { generateSlug, isValidSlug } from "@/lib/slug";
 
+/** Dialog for creating a new short link. Closes immediately on submit for instant feel. */
 export function CreateLinkDialog() {
     const [open, setOpen] = useState(false);
     const [url, setUrl] = useState("");
     const [slug, setSlug] = useState(() => generateSlug());
     const [title, setTitle] = useState("");
     const [error, setError] = useState<string | null>(null);
-    const [isPending, startTransition] = useTransition();
+    const [, startTransition] = useTransition();
 
     const handleRandomize = useCallback(() => {
         setSlug(generateSlug());
     }, []);
 
+    /** Validates input, closes the dialog immediately, and fires the server action. */
     const handleSubmit = useCallback(() => {
         setError(null);
 
@@ -58,23 +60,39 @@ export function CreateLinkDialog() {
             return;
         }
 
-        startTransition(async () => {
-            const result = await createLink(
-                slug.trim(),
-                url.trim(),
-                title.trim() || null,
-            );
+        // Close dialog immediately for instant feel
+        const submitSlug = slug.trim();
+        const submitUrl = url.trim();
+        const submitTitle = title.trim() || null;
 
-            if (result.success) {
-                toast.success("Link created successfully.");
-                setOpen(false);
-                setUrl("");
-                setSlug(generateSlug());
-                setTitle("");
-            } else {
-                setError(result.error ?? "Failed to create link.");
-            }
-        });
+        setOpen(false);
+        setUrl("");
+        setSlug(generateSlug());
+        setTitle("");
+
+        toast.promise(
+            new Promise<void>((resolve, reject) => {
+                startTransition(async () => {
+                    const result = await createLink(
+                        submitSlug,
+                        submitUrl,
+                        submitTitle,
+                    );
+                    if (result.success) {
+                        resolve();
+                    } else {
+                        reject(
+                            new Error(result.error ?? "Failed to create link."),
+                        );
+                    }
+                });
+            }),
+            {
+                loading: "Creating link...",
+                success: "Link created successfully.",
+                error: (err: Error) => err.message,
+            },
+        );
     }, [url, slug, title]);
 
     return (
@@ -121,7 +139,6 @@ export function CreateLinkDialog() {
                                 placeholder="https://example.com/very-long-url"
                                 value={url}
                                 onChange={(e) => setUrl(e.target.value)}
-                                disabled={isPending}
                                 required
                             />
                         </div>
@@ -135,7 +152,6 @@ export function CreateLinkDialog() {
                                     placeholder="custom-slug"
                                     value={slug}
                                     onChange={(e) => setSlug(e.target.value)}
-                                    disabled={isPending}
                                     required
                                 />
                                 <Tooltip>
@@ -146,7 +162,6 @@ export function CreateLinkDialog() {
                                                 variant="outline"
                                                 size="icon"
                                                 onClick={handleRandomize}
-                                                disabled={isPending}
                                             >
                                                 <IconRefresh aria-hidden="true" />
                                             </Button>
@@ -172,7 +187,6 @@ export function CreateLinkDialog() {
                                 placeholder="My Link"
                                 value={title}
                                 onChange={(e) => setTitle(e.target.value)}
-                                disabled={isPending}
                             />
                         </div>
 
@@ -181,16 +195,7 @@ export function CreateLinkDialog() {
                         ) : null}
 
                         <DialogFooter>
-                            <Button type="submit" disabled={isPending}>
-                                {isPending ? (
-                                    <IconLoader2
-                                        aria-hidden="true"
-                                        data-icon="inline-start"
-                                        className="animate-spin"
-                                    />
-                                ) : null}
-                                Create Link
-                            </Button>
+                            <Button type="submit">Create Link</Button>
                         </DialogFooter>
                     </form>
                 </DialogContent>

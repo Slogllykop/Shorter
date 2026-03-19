@@ -54,7 +54,7 @@ export function LinkList({ links, baseUrl }: LinkListProps) {
     return (
         <div className="flex flex-col gap-4">
             <div className="rounded-[1.25rem] border border-white/10 bg-white/4 p-3 sm:p-4">
-                <div className="flex flex-col gap-3 sm:flex-row sm:items-center">
+                <div className="flex flex-row items-center gap-2">
                     <div className="relative flex-1">
                         <IconSearch
                             aria-hidden="true"
@@ -63,9 +63,9 @@ export function LinkList({ links, baseUrl }: LinkListProps) {
                         <Input
                             value={query}
                             onChange={(event) => setQuery(event.target.value)}
-                            placeholder="Search by slug, title, or destination URL"
+                            placeholder="Search links..."
                             aria-label="Search links"
-                            className="h-11 rounded-2xl border-white/12 bg-black/24 pl-10 text-white placeholder:text-white/40"
+                            className="h-10 rounded-xl border-white/12 bg-black/24 pl-10 text-white placeholder:text-white/40 sm:h-11 sm:rounded-2xl"
                         />
                         <TooltipProvider>
                             {query ? (
@@ -76,11 +76,11 @@ export function LinkList({ links, baseUrl }: LinkListProps) {
                                                 type="button"
                                                 onClick={() => setQuery("")}
                                                 aria-label="Clear search"
-                                                className="-translate-y-1/2 absolute top-1/2 right-3 inline-flex size-7 items-center justify-center rounded-full text-white/48 transition-colors hover:bg-white/8 hover:text-white"
+                                                className="-translate-y-1/2 absolute top-1/2 right-2 inline-flex size-6 items-center justify-center rounded-full text-white/48 transition-colors hover:bg-white/8 hover:text-white sm:right-3 sm:size-7"
                                             >
                                                 <IconX
                                                     aria-hidden="true"
-                                                    className="size-4"
+                                                    className="size-3.5 sm:size-4"
                                                 />
                                             </button>
                                         }
@@ -93,9 +93,9 @@ export function LinkList({ links, baseUrl }: LinkListProps) {
                         </TooltipProvider>
                     </div>
 
-                    <div className="flex items-center gap-2 rounded-2xl border border-white/10 bg-black/24 px-3 py-2 text-white/64 text-xs">
+                    <div className="flex h-10 shrink-0 items-center justify-center rounded-xl border border-white/10 bg-black/24 px-3 font-medium text-[11px] text-white/60 tabular-nums sm:h-11 sm:rounded-2xl sm:text-xs">
                         <span>
-                            {filteredLinks.length} / {links.length} links
+                            {filteredLinks.length}/{links.length}
                         </span>
                     </div>
                 </div>

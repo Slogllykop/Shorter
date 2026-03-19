@@ -26,7 +26,7 @@ export default async function SettingsPage() {
     const emails = await getWhitelistedEmails();
 
     return (
-        <div className="flex min-h-screen flex-col bg-black">
+        <div className="flex min-h-dvh flex-col bg-black">
             <Header email={user.email ?? ""} />
             <main className="mx-auto w-full max-w-5xl flex-1 p-4 md:p-8">
                 <div className="mb-8">

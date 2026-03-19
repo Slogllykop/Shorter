@@ -14,7 +14,7 @@ type DashboardViewProps = {
 
 export function DashboardView({ email, links, baseUrl }: DashboardViewProps) {
     return (
-        <div className="min-h-screen">
+        <div className="min-h-dvh">
             <Header email={email} />
 
             <main className="mx-auto max-w-5xl px-6 py-8">

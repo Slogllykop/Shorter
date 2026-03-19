@@ -24,7 +24,10 @@ export function AddEmailForm({
     };
 
     return (
-        <form onSubmit={handleSubmit} className="mb-6 flex items-end gap-2">
+        <form
+            onSubmit={handleSubmit}
+            className="mb-6 flex flex-col items-stretch gap-2 sm:flex-row sm:items-end"
+        >
             <div className="flex flex-1 flex-col gap-2">
                 <Label htmlFor="add-email-input">Email address</Label>
                 <Input
@@ -37,7 +40,11 @@ export function AddEmailForm({
                     required
                 />
             </div>
-            <Button type="submit" disabled={isPending || !newEmail}>
+            <Button
+                type="submit"
+                disabled={isPending || !newEmail}
+                className="w-full sm:w-auto"
+            >
                 {isPending ? (
                     <IconLoader2
                         aria-hidden="true"
