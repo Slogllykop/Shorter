@@ -28,11 +28,11 @@ export async function generateMetadata({
         .limit(1);
 
     if (!links || links.length === 0) {
-        return { title: "Link Not Found | Breve" };
+        return { title: "Link Not Found" };
     }
 
     const link = links[0];
-    const title = `${link.title} Analytics | Breve`;
+    const title = `${link.title} Analytics`;
     const description = `View detailed analytics and tracking information for "${link.title}" (${link.original_url}) on Breve.`;
 
     return {
